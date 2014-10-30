@@ -8,7 +8,7 @@ Serial dataLogger (p9, p10);  // tx, rx
 char c;
 char MSserial;
 int count;
-//commented!
+
 int main() {    
     
     dataLogger.baud(38400);
