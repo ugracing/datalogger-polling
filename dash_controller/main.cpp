@@ -8,7 +8,7 @@ char c;
 char MSserial;
 int count;
 string str;
-//int[206] byte_array;
+
 
 typedef struct car_data{
     float RPM;
@@ -24,13 +24,17 @@ typedef struct car_data{
     
 } car_data;
 
-int main() {
+car_data car_data;
+
+void get_data() 
+{
     dataLogger.baud(38400);
-    car_data car_data;
     pc.baud(57600);
     pc.printf("PC and Datalogger serial ready !!\n\r");
-    while(1) {
-        if(pc.readable()) {
+    while(1) 
+	{
+		if(pc.readable()) 
+		{
             printf("pc is readable!");
             pc.printf("\n\r    %d  \n\r", count);
             count=0;
@@ -41,10 +45,9 @@ int main() {
         count = 0;
         str = "";
         //if (!dataLogger.readable()) printf("AAAAA!!!!!");
-        while (dataLogger.readable()) {
-            
+        while (dataLogger.readable()) 
+		{
             str += dataLogger.getc();
-            
             count++;
             if (dataLogger.readable() == false)
             {
@@ -64,39 +67,60 @@ int main() {
             pc.printf("data %f \n\r",car_data.coolant);
             
             b[1] = str[28];b[0] = str[29];
-            car_data.air_fuel_1 = i*0.1; //it's a float ben you mong!
+            car_data.air_fuel_1 = i*0.1; 
             pc.printf("data %f \n\r",car_data.air_fuel_1);
             
             b[1] = str[18];b[0] = str[19];
-            car_data.map = i*0.1; //it's a float ben you mong!
+            car_data.map = i*0.1; 
             pc.printf("data %f \n\r",car_data.map);
 			
 			
             b[1] = str[20];b[0] = str[21];
-            car_data.mat = (i-320)*0.05555; //it's a float ben you mong!
+            car_data.mat = (i-320)*0.05555; 
 			
             b[1] = str[24];b[0] = str[25];
-            car_data.throttle = i*0.1; //it's a float ben you mong!
+            car_data.throttle = i*0.1; 
 			
             b[1] = str[26];b[0] = str[27];
             car_data.battery = i*0.1;
 			
             b[1] = str[28];b[0] = str[29];
-            car_data.air_fuel_1 = i*0.1; //it's a float ben you mong! 
+            car_data.air_fuel_1 = i*0.1; 
 			
             b[1] = str[28];b[0] = str[29];
-            car_data.air_fuel_2 = i*0.1; //it's a float ben yo
+            car_data.air_fuel_2 = i*0.1; 
             
             int offset;
             b[0] = str[10];
-            for(offset = 0; offset<7; offset++){
-                
+            for(offset = 0; offset<7; offset++)
+			{
                 car_data.injectors_status[offset] = ((b[0] >> offset)  & 0x01);
                 pc.printf("%d\n", car_data.injectors_status[offset]);
-                
 			}
+
+			break;		//exits the struct filling lop when the struct has been filled
 			
-        };
+		};
         
-    }
-};
+	}
+}
+
+void drive_dash()
+{
+	//drive leds and set warning light
+}
+
+void log_data()
+{
+	//log the data is .tsv format
+}
+
+int main()
+{
+	while(1)
+	{
+		get_data();
+		drive_dash();
+		log_data();
+	}
+}
