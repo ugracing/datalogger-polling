@@ -31,51 +31,39 @@ void flushSerialBuffer(void) { char char1 = 0; while (dataLogger.readable()) { c
 
 car_data get_data()
 {
-    //pc.printf("getting DTAT\n\r");
     car_data car_data;
-    //pc.printf("made car_data object\n\r");
-    dataLogger.baud(57600);
+    dataLogger.baud(38400);
     pc.baud(57600);
-    //pc.printf("set bauds\n\r");
     
     //if(pc.readable())
     //{
     //pc.printf("pc is readable!");
-    pc.printf("\n\r %d \n\r", count);
+    pc.printf("\n\r COUNT %d \n\r", count);
     count=0;
     // c = pc.getc();
     
     // pc.printf("\n\r%c\n\r",c);
-    flushSerialBuffer();
-    //wait(0.1);
+    //flushSerialBuffer();
+    wait(0.1);
     dataLogger.printf("A");
     
     //    }
-    //pc.printf("after if ");
+    
     count = 0;
     str = "";
     
-    if (!dataLogger.readable())
-    {
-        pc.printf("AAAAA!!!!!");
-    }
-    else
-    {
-        pc.printf(" ");
-    }
-    //wait(0.01);
+    
     while (dataLogger.readable())
     {
-        //wait(0.02);
         str += dataLogger.getc();
         count++;
         if (dataLogger.readable() == false)
         {
-            wait(0.002);
-        };
-        
+            wait(0.001);
+        }
     }
-    flushSerialBuffer();
+    //printf("START %s\r\n END", str);
+    wait(0.001);
     if (count > 0)
     {
         pc.printf("\n\r %d \n\r", count);
@@ -86,12 +74,9 @@ car_data get_data()
         };
         b[1] = str[22]; b[0] = str[23];
         car_data.coolant = (i-320) * 0.05555;
-        
         b[1] = str[6]; b[0] = str[7];
         car_data.RPM = i;
         pc.printf("rpm %f \n\r",car_data.RPM);
-        
-        
         pc.printf("coolant %f \n\r",car_data.coolant);
         b[1] = str[28];b[0] = str[29];
         car_data.air_fuel_1 = i*0.1;
@@ -117,6 +102,7 @@ car_data get_data()
             pc.printf("%d", car_data.injectors_status[offset]);
         } //exits the struct filling lop when the struct has been filled
     };
+    
     return car_data;
 }
 
@@ -142,13 +128,13 @@ void log_data()
 }
 int main()
 {
-    dataLogger.baud(57600);
+    dataLogger.baud(38400);
     pc.baud(57600);
     //pc.printf("");
     while(1)
     {   //wait(0.02);
         car_data car_data = get_data();
         // drive_dash(car_data.RPM, car_data.coolant);
-        log_data();
+        //log_data();
     }
 }
